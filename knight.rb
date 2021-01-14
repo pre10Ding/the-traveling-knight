@@ -14,10 +14,6 @@ class Knight
   def knight_moves(starting_point, destination)
     # check to see if the KnightSquare obj is the same as last time.
     @root = generate_knight(starting_point) #unless @root.nil? || @root.coordinate.eql?(starting_point)
-    # p @covered_coordinates
-    # p @root
-    @covered_coordinates = []
-    @stack_level = 0
     squares_traveled = traverse_knight(destination) # array of coordinates
     number_of_moves = squares_traveled.length
     print_result(squares_traveled, number_of_moves)
@@ -25,16 +21,16 @@ class Knight
 
   private
 
-  def generate_knight(starting_point)
+  def generate_knight(starting_point, points_traveled = [])
     # puts "GENERATING KNIGHT MOVE #{starting_point}"
     knight = KnightSquare.new(starting_point)
     valid_coordinates = generate_valid_coordinate_list(starting_point)
     # p valid_coordinates
+    points_traveled << starting_point
     valid_coordinates.each do |coordinate|
-      # @covered_coordinates << coordinate
-      @stack_level += 1
-      @stack_level
-      knight.possible_moves << generate_knight(coordinate) if @stack_level < @max_stacks_allowed
+      unless points_traveled.include?(coordinate)
+        knight.possible_moves << generate_knight(coordinate, points_traveled)
+      end
     end
     knight
   end
@@ -54,6 +50,17 @@ class Knight
 
   def out_of_bounds?(single_coord)
     single_coord > 8 || single_coord < 1
+  end
+
+  # shift and push left/right into an array queue, then process accordingly
+  def level_order(queue = [@root])
+    return [] if queue.empty? # base case where traversal is done
+
+    node = queue.shift # dequeue
+    queue.push(node.left) unless node.left.nil? # enqueue unless nil
+    queue.push(node.right) unless node.right.nil? # enqueue unless nil
+    # prepend the result to the result of recursive call
+    level_order(queue).unshift(node.value)
   end
 
   def traverse_knight(destination, square = @root)
@@ -78,3 +85,4 @@ knight.knight_moves([4, 4], [5, 4])
 knight.knight_moves([1,1],[2,3]) # == [[0,0],[1,2]]
 knight.knight_moves([1,1],[4,4]) # == [[0,0],[1,2],[3,3]]
 knight.knight_moves([4,4],[1,1]) # == [[3,3],[1,2],[0,0]]
+p knight
