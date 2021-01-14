@@ -26,10 +26,11 @@ class Knight
     knight = KnightSquare.new(starting_point)
     valid_coordinates = generate_valid_coordinate_list(starting_point)
     # p valid_coordinates
-    points_traveled << starting_point
+    points_traveled_copy = points_traveled.clone
+    points_traveled_copy << starting_point
     valid_coordinates.each do |coordinate|
       unless points_traveled.include?(coordinate)
-        knight.possible_moves << generate_knight(coordinate, points_traveled)
+        knight.possible_moves << generate_knight(coordinate, points_traveled_copy)
       end
     end
     knight
