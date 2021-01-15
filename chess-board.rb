@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-require 'pry'
 # nodes on chessboard for the knight
 class ChessBoard
-  require './knight'
+  require './square'
   def initialize(board_size = 8)
     @board_size = board_size
     # generate an knight-specific adjacency list for every square on the game board
@@ -12,7 +11,7 @@ class ChessBoard
 
   # find and print the shortest path a knight can take to get to a specified square
   def knight_moves(origin, destination)
-    root = Knight.new(convert_to_square_num(origin), 0, nil)
+    root = Square.new(convert_to_square_num(origin), 0, nil)
     destination_square = find_destination_of_shortest_path(convert_to_square_num(destination), [root])
     # p destination_square
     shortest_path = find_shortest_path_from_origin(destination_square)
@@ -79,8 +78,8 @@ class ChessBoard
       @knight_moves_adjacency_list[square.index].each do |index|
         return square if index.eql?(destination) # destination square is found
 
-        new_knight = Knight.new(index, square.distance + 1, square)
-        queue.push(new_knight) unless traveled.include?(index) # enqueue
+        new_knight = Square.new(index, square.distance + 1, square)
+        queue.push(new_knight) unless visited.include?(index) # enqueue
         visited << index # track visited squares
       end
     end
