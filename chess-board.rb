@@ -19,6 +19,7 @@ class ChessBoard
     puts "You made it in #{shortest_path.length} moves! Here's your path:"
     shortest_path.each { |coordinate| p coordinate }
     p destination
+    shortest_path
   end
 
   private
